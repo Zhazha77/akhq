@@ -49,6 +49,9 @@ class Login extends Form {
           return;
         }
         // Handle login failed for bearer auth
+
+        toast.error(res.status);
+
         if (res.status === 500) {
           toast.error('Wrong Username or Password!');
           return;
