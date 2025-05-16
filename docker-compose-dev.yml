@@ -141,16 +141,14 @@ services:
     image: osixia/openldap:1.5.0
     container_name: openldap
     environment:
-        - LDAP_ORGANISATION=exampleorg
-        - LDAP_DOMAIN=example.in
-        - "LDAP_BASE_DN=dc=example,dc=in"
-        - LDAP_ADMIN_PASSWORD=password # cn=admin,dc=example,dc=in
+      LDAP_ORGANISATION: "AKHQ"
+      LDAP_DOMAIN: "dev.local"
+      LDAP_ADMIN_PASSWORD: "admin"
     ports:
-        - 389:389
-        - 636:636
+      - "389:389"
+      - "636:636"
     volumes:
-      - ldap-data:/var/lib/ldap
-      - ldap-config:/etc/ldap/slapd.d
+      - ./ldap/ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom:ro
 
   phpldapadmin:
     image: osixia/phpldapadmin:0.9.0
