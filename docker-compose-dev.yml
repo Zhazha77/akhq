@@ -7,6 +7,10 @@ volumes:
     driver: local
   ui-build:
     driver: local
+  ldap-data:
+    driver: local
+  ldap-config:
+    driver: local
 
 services:
   akhq:
@@ -21,6 +25,7 @@ services:
       - 8080:8080
     environment:
       MICRONAUT_CONFIG_FILES: '/tmp/application.dev.yml'
+      MICRONAUT_SECURITY_TOKEN_JWT_SIGN_SECRET: "X8uA6h&9kLp1MwV4zTq7Nm3YzR2sHt*G"
     depends_on:
       - kafka
       - schema-registry
@@ -131,3 +136,28 @@ services:
       KSQL_KSQL_CONNECT_URL: 'http://connect:8083'
       KSQL_KSQL_SINK_PARTITIONS: '1'
       KSQL_KSQL_LOGGING_PROCESSING_TOPIC_REPLICATION_FACTOR: '1'
+
+  openldap:
+    image: osixia/openldap:1.5.0
+    container_name: openldap
+    environment:
+        - LDAP_ORGANISATION=exampleorg
+        - LDAP_DOMAIN=example.in
+        - "LDAP_BASE_DN=dc=example,dc=in"
+        - LDAP_ADMIN_PASSWORD=password # cn=admin,dc=example,dc=in
+    ports:
+        - 389:389
+        - 636:636
+    volumes:
+      - ldap-data:/var/lib/ldap
+      - ldap-config:/etc/ldap/slapd.d
+
+  phpldapadmin:
+    image: osixia/phpldapadmin:0.9.0
+    container_name: phpldapadmin
+    environment:
+      PHPLDAPADMIN_LDAP_HOSTS: openldap
+    ports:
+      - "6443:443"
+    depends_on:
+      - openldap

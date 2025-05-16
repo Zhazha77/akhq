@@ -1,3 +1,19 @@
+micronaut:
+  security:
+    enabled: true
+    ldap:
+      default:
+        enabled: true
+        context:
+          server: 'ldap://openldap:389'
+          managerDn: 'cn=admin,dc=example,dc=in'
+          managerPassword: 'password'
+        search:
+          base: "ou=User,dc=example,dc=in"
+          filter: "(uid={0})"
+        groups:
+          enabled: false
+
 akhq:
   connections:
     local:
